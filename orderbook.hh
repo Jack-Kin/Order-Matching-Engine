@@ -16,4 +16,5 @@ private:
     std::vector<CompletedOrder> match();
 public:
     int add_order(Order);
+    int view_order(); //?
 };
