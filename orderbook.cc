@@ -1,21 +1,6 @@
 #include "orderbook.hh"
 
-
 // private:
-std::vector<Transaction> OrderBook::match(Order &order){
-    
-}
-
-
-std::vector<Transaction> OrderBook::match_limit(Order &order){
-    
-}
-
-
-std::vector<Transaction> OrderBook::match_market(Order &order){
-    
-}
-
 
 void OrderBook::add_limit_order(Order& order){
     if(order.get_side() == OrderSide ::BUY){
