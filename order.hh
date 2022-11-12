@@ -29,8 +29,9 @@ public:
         timestamp(tmstmp){}
     auto get_id()const{return order_id;}
     auto get_quantity()const{return quantity;}
-    void reduce_quantity(unsigned short x){quantity-=x;} 
+    void reduce_quantity(unsigned short x){quantity-=x;} // only if aon=0
     auto get_quote()const{return quote;}
+    void set_quote(unsigned x){quote=x;} // only for market orders
     auto get_type()const{return order_type;}
     auto isBuy()const{return is_buy;}
     auto isAON()const{return all_or_none;}
