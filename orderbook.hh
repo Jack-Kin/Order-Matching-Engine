@@ -16,7 +16,8 @@ class OrderBook{
 private:
     std::array<char,16> company;
     std::unordered_map<unsigned, std::list<Order>> buypool, sellpool; // key=price level; value=a list of Order
-    std::priority_queue<unsigned> buyprices, sellprices; // stores current levels of the hashmaps (buypool and sellpool)
+    std::priority_queue<unsigned> buyprices; // stores current levels of the hashmaps (buypool and sellpool)
+    std::priority_queue<unsigned,std::vector<unsigned>,std::greater<unsigned>> sellprices; // minheap
     std::unordered_map<unsigned, unsigned> priceofID; // key=order ID, value=price level
     std::vector<Transaction> match_limit(Order &order);
     std::vector<Transaction> match_market(Order &order);
