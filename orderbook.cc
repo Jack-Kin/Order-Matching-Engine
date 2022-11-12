@@ -62,9 +62,9 @@ bool OrderBook::delete_order(unsigned int order_id){
         order_list = buypool[order.get_quote()]; // this is just a copy (also taking a lot of time)
         for (auto it = order_list.begin(); it != order_list.end(); ++it) {
         if(it->order_id == order_id){
-            order_list.erase(it);
+            order_list.erase(it); // deleted the object in the copy, but not in the original one.
             if(order_list.empty()){ 
-                buypool.erase(order.get_quote()); // deleted the object in the copy, but not the original one.
+                buypool.erase(order.get_quote()); 
             }
             return true;
         }
