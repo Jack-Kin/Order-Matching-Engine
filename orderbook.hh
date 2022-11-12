@@ -20,6 +20,8 @@ private:
 	std::unordered_map<unsigned int, Order&> order_map;
     void add_market_order(Order&);
     void add_limit_order(Order&);
+    // std::vector<Transaction> match_limit(Order &order);
+    // std::vector<Transaction> match_market(Order &order);
 public:
     void add_order(Order&);
     std::optional<Order> get_order(unsigned int);

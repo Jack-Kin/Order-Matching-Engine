@@ -101,6 +101,10 @@ void OrderBook::printBuySellPool()
     }
 }
 
+// std::vector<Transaction> OrderBook::match_market(Order &order){
+    
+// }
+
 int main(){
 
     OrderBook book;
@@ -131,7 +135,3 @@ int main(){
     book.delete_order(10); // shouldn't delete
     book.printBuySellPool();
 }
-
-// std::vector<Transaction> OrderBook::match_market(Order &order){
-    
-// }
