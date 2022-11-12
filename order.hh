@@ -11,13 +11,13 @@ enum class OrderType : char {
 
 class Order{
 private:
-    const unsigned short order_id;
+    unsigned short order_id;
     unsigned short quantity; 
-    const unsigned quote;
-    const OrderType order_type;
-    const char is_buy; // buy=1, sell=0
-    const char all_or_none; // aon=1, partial order allowed=0
-    const std::chrono::time_point<std::chrono::system_clock> timestamp;
+    unsigned quote;
+    OrderType order_type;
+    char is_buy; // buy=1, sell=0
+    char all_or_none; // aon=1, partial order allowed=0
+    std::chrono::time_point<std::chrono::system_clock> timestamp;
 public:
     Order(unsigned short id, unsigned short qty, unsigned quote, OrderType tp, char buy, char aon, std::chrono::time_point<std::chrono::system_clock> tmstmp):
         order_id(id),
