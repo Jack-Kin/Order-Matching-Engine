@@ -25,7 +25,7 @@ private:
     auto best_ask()const{return *(sellprices.begin());}
     auto best_bid()const{return *(buyprices.rbegin());}
     std::vector<Transaction> match(Order &order);
-    std::vector<Transaction> match_limit(Order &order);
+    auto match_limit(Order &order){return match(order);}
     std::vector<Transaction> match_market(Order &order);
     void add_limit_order(Order&);
     void add_market_order(Order&);

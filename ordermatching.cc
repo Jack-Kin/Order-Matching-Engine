@@ -6,11 +6,6 @@ std::vector<Transaction> OrderBook::match(Order &order){
 }
 
 
-std::vector<Transaction> OrderBook::match_limit(Order &order){
-    
-}
-
-
 std::vector<Transaction> OrderBook::match_market(Order &order){
     if(order.get_side()==OrderSide::BUY){
         if(sellprices.empty()){
