@@ -1,7 +1,7 @@
 #pragma once
 
 #include <chrono>
-#include <iostream>
+#include <ostream>
 
 enum class OrderSide : unsigned char{
     BUY,
