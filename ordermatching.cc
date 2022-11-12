@@ -18,5 +18,5 @@ std::vector<Transaction> OrderBook::match_market(Order &order){
         }
         order.set_quote(best_bid());
     }
-    return match(order);
+    return match_order(order);
 }
