@@ -1,12 +1,23 @@
 #pragma once
 #include <array>
 #include <chrono>
+#include <iostream>
 
-enum class OrderType : char {
-    limit,
-    market,
-    stop,
-    stop_limit
+enum class OrderSide : unsigned char{
+    BUY,
+    SELL,
+    SELL_SHORT,
+    SELL_SHORT_EXEMPT,
+    CROSS,
+    CROSS_SHORT,
+    CROSS_SHORT_EXEMPT
+};
+
+enum class OrderType : unsigned char {
+    LIMIT,
+    MARKET,
+    STOP,
+    STOP_LIMIT
 };
 
 class Order{
@@ -14,17 +25,17 @@ private:
     unsigned short order_id;
     unsigned short quantity; 
     unsigned quote;
+    OrderSide order_side;
     OrderType order_type;
-    char is_buy; // buy=1, sell=0
     char all_or_none; // aon=1, partial order allowed=0
     std::chrono::time_point<std::chrono::system_clock> timestamp;
 public:
-    Order(unsigned short id, unsigned short qty, unsigned quote, OrderType tp, char buy, char aon, std::chrono::time_point<std::chrono::system_clock> tmstmp):
+    Order(unsigned short id, unsigned short qty, unsigned quote, OrderSide sd, OrderType tp, char aon, std::chrono::time_point<std::chrono::system_clock> tmstmp):
         order_id(id),
         quantity(qty),
         quote(quote),
+        order_side(sd),
         order_type(tp),
-        is_buy(buy),
         all_or_none(aon),
         timestamp(tmstmp){}
     auto get_id()const{return order_id;}
@@ -32,11 +43,18 @@ public:
     void reduce_quantity(unsigned short x){quantity-=x;} // only if aon=0
     auto get_quote()const{return quote;}
     void set_quote(unsigned x){quote=x;} // only for market orders
+    auto get_side()const{return order_side;}
     auto get_type()const{return order_type;}
-    auto isBuy()const{return is_buy;}
     auto isAON()const{return all_or_none;}
     auto get_time()const{return timestamp;}
 };
+
+std::ostream& operator<<(std::ostream &s, const Order &order) {
+    return s << "(" << order.get_id() << ", "
+    << ", " << static_cast<std::underlying_type<OrderSide>::type>(order.get_side()) << ", " 
+    << static_cast<std::underlying_type<OrderType>::type>(order.get_type())
+    << ", " << order.get_quote() << ", " << order.get_quantity() << "\n";
+}
 
 class Transaction{
 public:
