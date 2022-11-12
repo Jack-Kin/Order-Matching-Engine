@@ -29,4 +29,6 @@ int main(){
     book.delete_order(6);
     book.delete_order(10); // shouldn't delete
     book.printBuySellPool();
+
+    return 0;
 }
