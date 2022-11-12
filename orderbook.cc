@@ -1,8 +1,5 @@
 #include "orderbook.hh"
 
-// std::vector<CompletedOrder> OrderBook::match(){
-
-// }
 
 void OrderBook::add_order(Order& order){
     switch(order.order_type){
@@ -134,3 +131,7 @@ int main(){
     book.delete_order(10); // shouldn't delete
     book.printBuySellPool();
 }
+
+// std::vector<Transaction> OrderBook::match_market(Order &order){
+    
+// }

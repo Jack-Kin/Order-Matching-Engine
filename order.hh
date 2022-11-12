@@ -36,6 +36,14 @@ class Order{
             //this->order_id = boost::lexical_cast<std::string>(generator());
             this->order_id = order_id;
         }
+        auto get_id()const{return order_id;}
+        auto get_quantity()const{return quantity;}
+        void reduce_quantity(unsigned short x){quantity-=x;} 
+        auto get_quote()const{return price;}
+        auto get_type()const{return order_type;}
+        auto isBuy()const{return order_side == OrderSide :: BUY;}
+        auto isAON()const{return all_or_none;}
+        auto get_time()const{return timestamp;}
 };
 
 std::ostream& operator<<(std::ostream &s, const Order &order) {
@@ -45,10 +53,12 @@ std::ostream& operator<<(std::ostream &s, const Order &order) {
     << ", " << order.price << ", " << order.quantity ;
 }
 
-class CompletedOrder{
+
+class Transaction{
 public:
-    unsigned short order_id;
-    float final_price; // price at which a transaction was done
-    short quantity; // In case of partial order
-    std::chrono::time_point<std::chrono::system_clock> timestamp; // when the transaction was completed; -- not sure if usefull
+    unsigned short buyside_order_id;
+    unsigned short sellside_order_id;
+    unsigned final_price; // price at which a transaction was done
+    unsigned short quantity; // In case of partial order
+    std::chrono::time_point<std::chrono::system_clock> timestamp; // when the transaction was completed; -- not sure if useful
 };

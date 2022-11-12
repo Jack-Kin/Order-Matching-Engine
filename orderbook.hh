@@ -29,14 +29,12 @@ public:
 
 /*Complexity:
 
-n = no of orders, N= no of levels
+n = no of orders
 Add order: 
-Add to PQ - log N
-Add to buy/sellpool - O(1) - worst case O(n) - can cause TLE for large numbers
+Add to buy/sellpool - O(log n) 
 Add to order_map - O(1)
 
 Delete order: 
-delete from buy/sell pool -O(1)
-delete from order map - O(log n)
-if price level is empty delete from buy/sell prices - not possible
+delete from buy/sell pool -O(log n)
+delete from order map - O(1)
 */
