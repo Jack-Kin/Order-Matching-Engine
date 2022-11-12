@@ -22,6 +22,6 @@ private:
     std::vector<Transaction> match_market(Order &order);
 public:
     int add_order(Order &order);
-    int view_order();
+    int view_order()const;
     int remove_order(unsigned order_id);
 };
