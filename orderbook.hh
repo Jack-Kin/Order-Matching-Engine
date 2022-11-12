@@ -21,10 +21,12 @@ private:
     // Adding a map from order id to order object reference since we cannot identify order type just with price level info
 	// std::unordered_map<unsigned int, Order&> order_map;
 
-    void add_market_order(Order&);
-    void add_limit_order(Order&);
+    std::vector<Transaction> match(Order &order);
     std::vector<Transaction> match_limit(Order &order);
     std::vector<Transaction> match_market(Order &order);
+    void add_limit_order(Order&);
+    void add_market_order(Order&);
+
 public:
     void add_order(Order&);
     std::optional<Order> get_order(unsigned int);

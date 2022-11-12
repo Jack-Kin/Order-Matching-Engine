@@ -1,16 +1,21 @@
 #include "orderbook.hh"
 
 
-void OrderBook::add_order(Order& order){
-    switch(order.get_type()){
-        case OrderType :: MARKET:
-            add_market_order(order);
-            break;
-        case OrderType :: LIMIT:
-            add_limit_order(order);
-            break;
-    }
+// private:
+std::vector<Transaction> OrderBook::match(Order &order){
+    
 }
+
+
+std::vector<Transaction> OrderBook::match_limit(Order &order){
+    
+}
+
+
+std::vector<Transaction> OrderBook::match_market(Order &order){
+    
+}
+
 
 void OrderBook::add_limit_order(Order& order){
     if(order.get_side() == OrderSide ::BUY){
@@ -27,6 +32,7 @@ void OrderBook::add_limit_order(Order& order){
     order_map.insert({order.order_id,order});
 }
 
+
 void OrderBook::add_market_order(Order& order){
     if(order.get_side() == OrderSide ::BUY){
         //check top of sellprices for best sell price, if not exists set to max
@@ -39,6 +45,21 @@ void OrderBook::add_market_order(Order& order){
     order_map.insert({order.order_id,order});
 }
 
+
+// public:
+
+void OrderBook::add_order(Order& order){
+    switch(order.get_type()){
+        case OrderType :: MARKET:
+            add_market_order(order);
+            break;
+        case OrderType :: LIMIT:
+            add_limit_order(order);
+            break;
+    }
+}
+
+
 std::optional<Order> OrderBook::get_order(unsigned int order_id){
     //check order map
     auto order = order_map.find(order_id);
@@ -47,6 +68,7 @@ std::optional<Order> OrderBook::get_order(unsigned int order_id){
     }
     return order->second;
 }
+
 
 bool OrderBook::delete_order(unsigned int order_id){
     //find order in price map
@@ -84,8 +106,8 @@ bool OrderBook::delete_order(unsigned int order_id){
     return false;  
 }
 
-void OrderBook::printBuySellPool()
-{
+
+void OrderBook::printBuySellPool()const{
     std::cout << "BuyPool" << "\n";
     for (auto const &pair: buypool) {
         std::cout << "{" << pair.first << "}\n";
@@ -100,7 +122,3 @@ void OrderBook::printBuySellPool()
             std::cout << ' ' << *it << "}\n";
     }
 }
-
-// std::vector<Transaction> OrderBook::match_market(Order &order){
-    
-// }
