@@ -20,9 +20,10 @@ public:
     std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
-class CompletedOrder{
+class Transaction{
 public:
-    unsigned short order_id;
+    unsigned short buyside_order_id;
+    unsigned short sellside_order_id;
     unsigned final_price; // price at which a transaction was done
     unsigned short quantity; // In case of partial order
     std::chrono::time_point<std::chrono::system_clock> timestamp; // when the transaction was completed; -- not sure if useful
