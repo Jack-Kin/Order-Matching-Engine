@@ -66,4 +66,10 @@ public:
     unsigned final_price; // price at which a transaction was done
     unsigned quantity; // In case of partial order
     std::chrono::time_point<std::chrono::system_clock> timestamp; // when the transaction was completed; -- not sure if useful
+    Transaction(unsigned buyer_order_id, unsigned seller_order_id, unsigned price, unsigned quantity):
+        buyside_order_id(buyer_order_id),
+        sellside_order_id(seller_order_id),
+        final_price(price),
+        quantity(quantity),
+        timestamp(std::chrono::system_clock::now()){}
 };
