@@ -14,7 +14,7 @@ private:
     std::array<char,16> symbol;
     std::unordered_map<unsigned, std::list<Order>> buypool, sellpool; // key=price level; value=a list of Order
     std::set<unsigned> buyprices, sellprices; // stores current levels of the hashmaps (buypool and sellpool)
-    std::unordered_map<unsigned, unsigned> priceofID; // key=order ID, value=price level
+    std::unordered_map<unsigned, std::pair<OrderType,unsigned>> findID; // key=order ID, value=(ordertype, price level)
 
     // std::map is slower than std::unordered_map, see complexity below.
     // std::map<float,std::deque<Order>,std::greater<float>> buypool;
