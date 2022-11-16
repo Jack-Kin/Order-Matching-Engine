@@ -50,14 +50,13 @@ public:
     auto get_type()const{return order_type;}
     auto isAON()const{return all_or_none;}
     auto get_time()const{return timestamp;}
+    friend std::ostream& operator<<(std::ostream &s, const Order &order) {
+        return s << "(" << order.get_id() << ", "
+        << static_cast<std::underlying_type<OrderSide>::type>(order.get_side()) << ", " 
+        << static_cast<std::underlying_type<OrderType>::type>(order.get_type())
+        << ", " << order.get_quote() << ", " << order.get_quantity() << "\n";
+    }
 };
-
-std::ostream& operator<<(std::ostream &s, const Order &order) {
-    return s << "(" << order.get_id() << ", "
-    << ", " << static_cast<std::underlying_type<OrderSide>::type>(order.get_side()) << ", " 
-    << static_cast<std::underlying_type<OrderType>::type>(order.get_type())
-    << ", " << order.get_quote() << ", " << order.get_quantity() << "\n";
-}
 
 class Transaction{
 public:
