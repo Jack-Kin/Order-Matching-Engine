@@ -31,7 +31,7 @@ private:
     char all_or_none; // aon=1, partial order allowed=0
     std::chrono::time_point<std::chrono::system_clock> timestamp;
 public:
-    Order(unsigned order, unsigned owner, unsigned qty, unsigned quote, OrderSide sd, OrderType tp, char aon, std::chrono::time_point<std::chrono::system_clock> tmstmp):
+    Order(unsigned order, unsigned owner, unsigned qty, unsigned quote, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
         order_id(order),
         owner_id(owner),
         quantity(qty),
