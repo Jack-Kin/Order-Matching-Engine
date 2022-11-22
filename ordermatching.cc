@@ -1,7 +1,7 @@
 #include "orderbook.hh"
 
 // private:
-std::vector<Transaction> OrderBook::match_order(Order &order){
+std::vector<Transaction> OrderBook::match_order(Order& order){
     std::vector<Transaction> result;
     bool isbuy = order.get_side()==OrderSide::BUY;
     while(!(isbuy ? sellprices.empty() : buyprices.empty())){
@@ -38,6 +38,7 @@ std::vector<Transaction> OrderBook::match_order(Order &order){
             }
             order.reduce_quantity(quantity);
             if(order.get_quantity()==0){
+                // need to delete this entry from pool similar to noworder
                 return result;
             }
         }
@@ -46,7 +47,7 @@ std::vector<Transaction> OrderBook::match_order(Order &order){
 }
 
 
-std::vector<Transaction> OrderBook::match_market(Order &order){
+std::vector<Transaction> OrderBook::match_market(Order& order){
     if(order.get_side()==OrderSide::BUY){
         if(sellprices.empty()){
             return {};

@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-enum class OrderSide : unsigned char{
+enum class OrderSide : unsigned char {
     BUY,
     SELL,
     SELL_SHORT,
@@ -31,11 +31,11 @@ private:
     char all_or_none; // aon=1, partial order allowed=0
     std::chrono::time_point<std::chrono::system_clock> timestamp;
 public:
-    Order(unsigned order, unsigned owner, unsigned qty, unsigned quote, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
+    Order(unsigned order, unsigned owner, unsigned quote, unsigned qty, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
         order_id(order),
         owner_id(owner),
-        quantity(qty),
         quote(quote),
+        quantity(qty),
         order_side(sd),
         order_type(tp),
         all_or_none(aon),
@@ -50,12 +50,7 @@ public:
     auto get_type()const{return order_type;}
     auto isAON()const{return all_or_none;}
     auto get_time()const{return timestamp;}
-    friend std::ostream& operator<<(std::ostream &s, const Order &order) {
-        return s << "(" << order.get_id() << ", "
-        << static_cast<std::underlying_type<OrderSide>::type>(order.get_side()) << ", " 
-        << static_cast<std::underlying_type<OrderType>::type>(order.get_type())
-        << ", " << order.get_quote() << ", " << order.get_quantity() << "\n";
-    }
+    friend std::ostream& operator<<(std::ostream &s, const Order &order);
 };
 
 class Transaction{

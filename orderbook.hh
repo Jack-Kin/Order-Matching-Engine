@@ -24,12 +24,12 @@ private:
 
     auto best_ask()const{return *(sellprices.begin());}
     auto best_bid()const{return *(buyprices.rbegin());}
-    std::vector<Transaction> match_order(Order &order);
-    auto match_limit(Order &order){return match_order(order);}
-    std::vector<Transaction> match_market(Order &order);
-    void add_limit_order(Order&);
-    void add_market_order(Order&);
-    std::optional<std::pair<OrderSide,unsigned>> get_order_helper(unsigned int);
+    std::vector<Transaction> match_order(Order& order);
+    auto match_limit(Order& order){return match_order(order);}
+    std::vector<Transaction> match_market(Order& order);
+    Order& add_limit_order(Order&);
+    Order& add_market_order(Order&);
+    std::optional<std::pair<OrderSide,unsigned>> get_order_pair(unsigned int);
 
 public:
     void add_order(Order&);
