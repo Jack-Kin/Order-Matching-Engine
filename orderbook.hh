@@ -11,6 +11,7 @@
 
 class OrderBook{
 private:
+    unsigned initial_price;
     std::array<char,16> symbol;
     std::unordered_map<unsigned, std::list<Order>> buypool, sellpool; // key=price level; value=a list of Order
     std::set<unsigned> buyprices, sellprices; // stores current levels of the hashmaps (buypool and sellpool)
@@ -32,6 +33,7 @@ private:
     std::optional<std::pair<OrderSide,unsigned>> get_order_pair(unsigned int);
 
 public:
+    OrderBook(unsigned initial_price): initial_price(initial_price){}
     void add_order(Order&);
     std::optional<Order> get_order(unsigned int);
     bool delete_order(unsigned int);
