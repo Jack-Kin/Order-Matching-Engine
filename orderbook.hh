@@ -23,8 +23,12 @@ private:
     // Adding a map from order id to order object reference since we cannot identify order type just with price level info
 	// std::unordered_map<unsigned int, Order&> order_map;
 
-    auto best_ask()const{return *(sellprices.begin());}
-    auto best_bid()const{return *(buyprices.rbegin());}
+    auto best_ask()const{
+        return sellprices.empty() ? initial_price : *(sellprices.begin());
+    }
+    auto best_bid()const{
+        return buyprices.empty() ? initial_price : *(buyprices.rbegin());
+    }
     std::vector<Transaction> match_order(Order& order);
     auto match_limit(Order& order){return match_order(order);}
     std::vector<Transaction> match_market(Order& order);
