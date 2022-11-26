@@ -6,7 +6,7 @@ class CentralOrderBook {
         std::unordered_map<symbol_t, OrderBook> order_book_map;
     public:
         //add symbol
-        StatusCode add_symbol(symbol_t);
+        StatusCode add_symbol(symbol_t, unsigned);
         //add order
         StatusCode add_order(symbol_t, Order&);
         //delete order

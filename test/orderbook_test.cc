@@ -6,7 +6,7 @@ int main(){
     CentralOrderBook book;
 
     symbol_t s1 = "APPLE";
-    book.add_symbol(s1);
+    book.add_symbol(s1,900);
 
     Order buy1(1,2,1000,15,OrderSide::BUY,OrderType::LIMIT,0);
     Order buy2(2,2,800,5,OrderSide::BUY,OrderType::LIMIT,0);

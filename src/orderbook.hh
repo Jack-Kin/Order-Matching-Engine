@@ -25,7 +25,7 @@ enum StatusCode {
 
 class OrderBook{
 private:
-    std::array<char,16> symbol;
+    unsigned initial_price;
     std::unordered_map<unsigned, std::list<Order>> buypool, sellpool; // key=price level; value=a list of Order
     std::set<unsigned> buyprices, sellprices; // stores current levels of the hashmaps (buypool and sellpool)
     std::unordered_map<unsigned, std::pair<OrderSide,unsigned>> order_map; // key=order ID, value=(ordertype, price level)
@@ -36,8 +36,12 @@ private:
     // Adding a map from order id to order object reference since we cannot identify order type just with price level info
 	// std::unordered_map<unsigned int, Order&> order_map;
 
-    auto best_ask()const{return *(sellprices.begin());}
-    auto best_bid()const{return *(buyprices.rbegin());}
+    auto best_ask()const{
+        return sellprices.empty() ? initial_price : *(sellprices.begin());
+    }
+    auto best_bid()const{
+        return buyprices.empty() ? initial_price : *(buyprices.rbegin());
+    }
     std::vector<Transaction> match_order(Order& order);
     auto match_limit(Order& order){return match_order(order);}
     std::vector<Transaction> match_market(Order& order);
@@ -46,6 +50,8 @@ private:
 
 public:
     StatusCode add_order(Order&);
+    OrderBook() = default;
+    OrderBook(unsigned initial_price): initial_price(initial_price){};
     std::optional<Order> get_order(unsigned int);
     StatusCode delete_order(unsigned int);
     void printBuySellPool()const;
