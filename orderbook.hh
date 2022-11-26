@@ -4,10 +4,24 @@
 #include <list>
 #include <optional>
 #include <set>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "order.hh"
+
+// typedef std::array<char,16> symbol_t; - not using array of chars for now, will have to define an explicit hash
+// function for unordered map if used - MEMORY NOT A CONCERN since it's used only in central order book
+typedef std::string symbol_t;
+
+enum StatusCode {
+    OK,
+    SYMBOL_EXISTS,
+    SYMBOL_NOT_EXISTS,
+    ORDER_EXISTS,
+    ORDER_NOT_EXISTS
+
+};
 
 class OrderBook{
 private:
@@ -27,14 +41,13 @@ private:
     std::vector<Transaction> match_order(Order& order);
     auto match_limit(Order& order){return match_order(order);}
     std::vector<Transaction> match_market(Order& order);
-    Order& add_limit_order(Order&);
-    Order& add_market_order(Order&);
+    StatusCode add_to_orderbook(Order&);
     std::optional<std::pair<OrderSide,unsigned>> get_order_pair(unsigned int);
 
 public:
-    void add_order(Order&);
+    StatusCode add_order(Order&);
     std::optional<Order> get_order(unsigned int);
-    bool delete_order(unsigned int);
+    StatusCode delete_order(unsigned int);
     void printBuySellPool()const;
 };
 

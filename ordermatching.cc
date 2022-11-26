@@ -25,6 +25,7 @@ std::vector<Transaction> OrderBook::match_order(Order& order){
             result.push_back(Transaction(isbuy?order.get_id():noworder.get_id(), isbuy?noworder.get_id():order.get_id(), level, quantity));
             noworder.reduce_quantity(quantity);
             if(noworder.get_quantity()==0){
+                order_map.erase(noworder.get_id());
                 nowlist.pop_front();
                 if(nowlist.empty()){
                     if(isbuy){

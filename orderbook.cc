@@ -2,7 +2,11 @@
 
 // private:
 
-Order& OrderBook::add_limit_order(Order& order){
+StatusCode OrderBook::add_to_orderbook(Order& order){
+    unsigned order_id = order.get_id();
+    if(order_map.count(order_id) != 0){
+        return StatusCode :: ORDER_EXISTS;
+    }
     unsigned quote = order.get_quote();
     OrderSide side = order.get_side();
     bool isbuy = side==OrderSide::BUY;
@@ -13,16 +17,16 @@ Order& OrderBook::add_limit_order(Order& order){
     }
     pool[quote].push_back(order);
     order_map.insert({order.get_id(),std::make_pair(side, quote)});
-    return pool[quote].back();
+    return StatusCode :: OK;
 }
 
 
-Order& OrderBook::add_market_order(Order& order){
-    OrderSide side = order.get_side();
-    unsigned quote = (side==OrderSide::BUY) ? std::numeric_limits<unsigned>::max() : 0.0;
-    order.set_quote(quote);
-    return add_limit_order(order);
-}
+// Order& OrderBook::add_market_order(Order& order){
+//     OrderSide side = order.get_side();
+//     unsigned quote = (side==OrderSide::BUY) ? std::numeric_limits<unsigned>::max() : 0.0;
+//     order.set_quote(quote);
+//     return add_limit_order(order);
+// }
 
 std::optional<std::pair<OrderSide,unsigned>> OrderBook::get_order_pair(unsigned int order_id){
     //check order map
@@ -36,19 +40,21 @@ std::optional<std::pair<OrderSide,unsigned>> OrderBook::get_order_pair(unsigned 
 
 // public:
 
-void OrderBook::add_order(Order& order){
+StatusCode OrderBook::add_order(Order& order){
+    StatusCode status = StatusCode :: OK;
     switch(order.get_type()){
-        case OrderType :: MARKET:{
-            Order& added_m = add_market_order(order);
-            match_market(added_m);
-        }
+        case OrderType :: MARKET:
+            match_market(order);  
             break;
-        case OrderType :: LIMIT:{
-            Order& added_l = add_limit_order(order);
-            match_limit(added_l);
-        }
+        case OrderType :: LIMIT:
+            match_limit(order);
             break;
     }
+    if (order.get_quantity() > 0){
+        // std::cout << "Order qty " << order.get_quantity();
+        status = add_to_orderbook(order);
+    }
+    return status; 
 }
 
 
@@ -71,10 +77,10 @@ std::optional<Order> OrderBook::get_order(unsigned int order_id){
 }
 
 
-bool OrderBook::delete_order(unsigned int order_id){
+StatusCode OrderBook::delete_order(unsigned int order_id){
     auto order_details = get_order_pair(order_id);
     if (!order_details){
-        return false;
+        return StatusCode :: ORDER_NOT_EXISTS;
     }
     auto order_pair = *order_details;
     order_map.erase(order_id);
@@ -87,13 +93,14 @@ bool OrderBook::delete_order(unsigned int order_id){
         if(it->get_id() == order_id){
             pool[price].erase(it);
             if(pool[price].empty()){ 
+                // std::cout << "Del from pool \n";
                 pool.erase(price);
                 prices.erase(price);  
             }
-            return true;
+            break;;
         }
     }
-    return false;  
+    return StatusCode :: OK;  
 }
 
 
