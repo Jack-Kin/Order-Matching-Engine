@@ -44,21 +44,27 @@ std::vector<Transaction> OrderBook::match_order(Order& order){
             }
         }
     }
+    //activate stop orders
     return result;
 }
 
 
-std::vector<Transaction> OrderBook::match_market(Order& order){
-    if(order.get_side()==OrderSide::BUY){
-        if(sellprices.empty()){
-            return {};
+std::vector<Transaction> OrderBook::match_order(Order& order, bool isMarket){
+    // Made minor change of passing boolean to prevent repeating same code in multiple places
+    if(isMarket){
+        if(order.get_side()==OrderSide::BUY){
+            if(sellprices.empty()){
+                return {};
+            }
+            order.set_quote(best_ask());
+        }else if(order.get_side()==OrderSide::SELL){
+            if(buyprices.empty()){
+                return {};
+            }
+            order.set_quote(best_bid());
         }
-        order.set_quote(best_ask());
-    }else if(order.get_side()==OrderSide::SELL){
-        if(buyprices.empty()){
-            return {};
-        }
-        order.set_quote(best_bid());
     }
-    return match_order(order);
+    auto res = match_order(order);
+    execute_stop_orders();
+    return res;
 }

@@ -26,6 +26,7 @@ private:
     unsigned owner_id;
     unsigned quantity; 
     unsigned quote;
+    unsigned stop_price;
     OrderSide order_side;
     OrderType order_type;
     char all_or_none; // aon=1, partial order allowed=0
@@ -40,15 +41,21 @@ public:
         order_type(tp),
         all_or_none(aon),
         timestamp(tmstmp){}
+    Order(unsigned order, unsigned owner, unsigned quote, unsigned stop_price, unsigned qty, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
+        Order(order,owner,quote,qty,sd,tp,aon,tmstmp)
+        {stop_price = stop_price;}
     auto get_id()const{return order_id;}
     auto get_owner()const{return owner_id;}
     auto get_quantity()const{return quantity;}
     void reduce_quantity(unsigned x){quantity-=x;} // only if aon=0
     auto get_quote()const{return quote;}
     void set_quote(unsigned x){quote=x;} // only for market orders
+    auto get_stop_price()const{return stop_price;}
     auto get_side()const{return order_side;}
     auto get_type()const{return order_type;}
+    void set_type(OrderType type){order_type = type;}
     auto isAON()const{return all_or_none;}
+    bool isBuy()const{return order_side == OrderSide::BUY;}
     auto get_time()const{return timestamp;}
     friend std::ostream& operator<<(std::ostream &s, const Order &order);
 };

@@ -1,11 +1,11 @@
 #include "central_order_book.hh"
 
-StatusCode CentralOrderBook::add_symbol(symbol_t symbol, unsigned price){
+StatusCode CentralOrderBook::add_symbol(symbol_t symbol){
     StatusCode status;
     if (order_book_map.count(symbol) != 0){
         status = StatusCode :: SYMBOL_EXISTS;
     } else{
-        order_book_map[symbol] = OrderBook(price);
+        order_book_map[symbol] = OrderBook();
         status = StatusCode :: OK;
     }
     return status;

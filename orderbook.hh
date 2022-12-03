@@ -23,12 +23,21 @@ enum StatusCode {
 
 };
 
+struct OrderInfo{
+    OrderSide side;
+    unsigned price;
+    OrderType type;
+};
+
 class OrderBook{
 private:
-    unsigned initial_price;
-    std::unordered_map<unsigned, std::list<Order>> buypool, sellpool; // key=price level; value=a list of Order
-    std::set<unsigned> buyprices, sellprices; // stores current levels of the hashmaps (buypool and sellpool)
-    std::unordered_map<unsigned, std::pair<OrderSide,unsigned>> order_map; // key=order ID, value=(ordertype, price level)
+    unsigned last_buy_price = 0;
+    unsigned last_sell_price = std::numeric_limits<unsigned>::max();
+    std::unordered_map<unsigned, std::list<Order>> buypool, sellpool, stop_buy_orders, stop_sell_orders; // key=price level; value=a list of Order
+    // stores current levels of the hashmaps (buypool and sellpool)
+    std::set<unsigned, std::less<unsigned>> sellprices, stop_sell_prices;
+    std::set<unsigned, std::greater<unsigned>> buyprices, stop_buy_prices;
+    std::unordered_map<unsigned, OrderInfo> order_map; // key=order ID, value=(ordertype, price level)
 
     // std::map is slower than std::unordered_map, see complexity below.
     // std::map<float,std::deque<Order>,std::greater<float>> buypool;
@@ -37,21 +46,32 @@ private:
 	// std::unordered_map<unsigned int, Order&> order_map;
 
     auto best_ask()const{
-        return sellprices.empty() ? initial_price : *(sellprices.begin());
+        return sellprices.empty() ? std::numeric_limits<unsigned>::max() : *(sellprices.begin()); //rethink logic
     }
     auto best_bid()const{
-        return buyprices.empty() ? initial_price : *(buyprices.rbegin());
+        return buyprices.empty() ? 0 : *(buyprices.begin());
     }
+    unsigned get_sell_market_price() const;
+    unsigned get_buy_market_price() const;
+    void execute_stop_orders();
+    template<typename Pred, typename Comp>
+    void execute_stop_orders(unsigned, std::set<unsigned, Comp>&, std::unordered_map<unsigned, std::list<Order>>&, Pred);
+    void execute_stop_order(Order&, bool);
     std::vector<Transaction> match_order(Order& order);
-    auto match_limit(Order& order){return match_order(order);}
-    std::vector<Transaction> match_market(Order& order);
-    StatusCode add_to_orderbook(Order&);
-    std::optional<std::pair<OrderSide,unsigned>> get_order_pair(unsigned int);
+    std::vector<Transaction> match_order(Order& order, bool isMarket);
+    // template<typename Comp>
+    StatusCode add_stop_order(Order&, bool);
+    std::optional<OrderInfo> get_order_pair(unsigned int);
+    template<typename Comp>
+    StatusCode add_to_orderbook(Order& order, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool);
+    template<typename Comp>
+    void delete_order(unsigned, unsigned, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool);
+    // template<typename Comp>
+    // void test(std::set<unsigned,Comp>& prices);
 
 public:
     StatusCode add_order(Order&);
     OrderBook() = default;
-    OrderBook(unsigned initial_price): initial_price(initial_price){};
     std::optional<Order> get_order(unsigned int);
     StatusCode delete_order(unsigned int);
     void printBuySellPool()const;
