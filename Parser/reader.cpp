@@ -214,16 +214,6 @@ Message Reader::createMessage(){
             break;
     }
 
-//    if (key == 'D')
-//    {
-//        std::cerr << "Type " << key << " found" << std::endl;
-//    }
-
-//    // Skip Bytes
-//    if (key != 'T' && key != 'z')
-//        skipBytes(22);
-
-
     if (strcmp(ticker, stock.c_str()) != 0) {
         return {};
     }
