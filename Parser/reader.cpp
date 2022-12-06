@@ -37,8 +37,6 @@ char Reader::getKey(){
 }
 
 Message Reader::createMessage(){
-//    char str[1024];
-
     printProgress();
     Message msg;
     skipBytes(2);
@@ -55,7 +53,6 @@ Message Reader::createMessage(){
         // debug
         uint64_t locateCode, trackingNumb;
         char eventCode;
-
         char direction;
         char mpid[5];
 
@@ -119,15 +116,7 @@ Message Reader::createMessage(){
             size = parse_uint32(message+19);
             strncpy(ticker, message+23, 8); ticker[8] = 0;
             price = parse_uint32(message+31);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
             strncpy(mpid, message+35, 4); mpid[4] = 0;
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 ",%c,%" PRIu32 ",%s,%" PRIu32 ".%04" PRIu32 ",%s\n",
-            //     key,locateCode,trackingNumb,timeStamp,orderId,
-            //     direction,size,ticker,
-            //     price/10000,price%10000,mpid);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(orderId));
@@ -141,14 +130,6 @@ Message Reader::createMessage(){
             timeStamp = parse_ts(message+4);
             orderId = parse_uint64(message+10);
             execSize = parse_uint32(message+18);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
-            //     matchNumber = parse_uint64(message+22);
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 ",%" PRIu32 ",%" PRIu64 "\n",
-            //     key,locateCode,trackingNumb,timeStamp,orderId,
-            //     execSize,matchNumber);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(orderId));
@@ -160,16 +141,6 @@ Message Reader::createMessage(){
             orderId = parse_uint64(message+10);
             execSize = parse_uint32(message+18);
             price = parse_uint32(message+31);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
-            //     matchNumber = parse_uint64(message+22);
-            //     printable = message[30];
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 ",%" PRIu32 ",%" PRIu64 ",%c,%" PRIu32 ".%04" PRIu32 "\n",
-            //     key,locateCode,trackingNumb,timeStamp,orderId,
-            //     execSize,matchNumber,printable,
-            //     price/10000,price%10000);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(orderId));
@@ -181,12 +152,6 @@ Message Reader::createMessage(){
             timeStamp = parse_ts(message+4);
             orderId = parse_uint64(message+10);
             cancSize = parse_uint32(message+18);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 ",%" PRIu32 "\n",
-            //     key,locateCode,trackingNumb,timeStamp,orderId,cancSize);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(orderId));
@@ -196,12 +161,6 @@ Message Reader::createMessage(){
             readBytesIntoMessage(18);
             timeStamp = parse_ts(message+4);
             orderId = parse_uint64(message+10);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 "\n",
-            //     key,locateCode,trackingNumb,timeStamp,orderId);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(orderId));
@@ -213,13 +172,6 @@ Message Reader::createMessage(){
             newOrderId = parse_uint64(message+18);
             newSize = parse_uint32(message+26);
             newPrice = parse_uint32(message+30);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu32 ",%" PRIu32 ".%04" PRIu32 "\n",
-            //     key,locateCode,trackingNumb,timeStamp,oldOrderId,
-            //     newOrderId,newSize,newPrice/10000,newPrice%10000);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(newOrderId));
@@ -235,14 +187,6 @@ Message Reader::createMessage(){
             size = parse_uint32(message+19);
             strncpy(ticker, message+23, 8); ticker[8] = 0;
             price = parse_uint32(message+31);
-            // if(debug){
-            //    locateCode = parse_uint16(message);
-            //    trackingNumb = parse_uint16(message+2);
-            //    matchId = parse_uint64(message+35);
-            //     sprintf(str,"%c,%" PRIu16 ",%" PRIu16 ",%" PRIu64 ",%" PRIu64 ",%c,%" PRIu32 ",%s,%" PRIu32 ".%04" PRIu32 ",%" PRIu64 "\n",
-            //     key,locateCode,trackingNumb,timeStamp,orderId,
-            //     direction,size,ticker,price/10000,price%10000,matchId);
-            // }
             msg.setType(key);
             msg.setTimeStamp(static_cast<time_type>(timeStamp));
             msg.setId(static_cast<id_type>(orderId));
@@ -269,9 +213,6 @@ Message Reader::createMessage(){
             }
             break;
     }
-//     if(debug){
-//         parserWriter.writeLine(std::string(str));
-//     }
 
 //    if (key == 'D')
 //    {
