@@ -76,7 +76,7 @@ private:
 public:
     OrderBook(symbol_t company = "MUDD") :
         company(company),
-        ostrm(company)
+        ostrm(company, std::ios_base::app)
         {}
     StatusCode add_order(Order&);
     std::optional<Order> get_order(unsigned int);
