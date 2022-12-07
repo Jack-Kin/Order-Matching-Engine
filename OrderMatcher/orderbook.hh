@@ -39,8 +39,8 @@ private:
 
     std::unordered_map<unsigned, std::list<Order>> buypool, sellpool, stop_buy_orders, stop_sell_orders; // key=price level; value=a list of Order
     // stores current levels of the hashmaps (buypool and sellpool)
-    std::set<unsigned, std::less<unsigned>> sellprices, stop_sell_prices;
-    std::set<unsigned, std::greater<unsigned>> buyprices, stop_buy_prices;
+    std::set<unsigned> sellprices, stop_sell_prices; // smallest first
+    std::set<unsigned, std::greater<unsigned>> buyprices, stop_buy_prices; // biggest first
     std::unordered_map<unsigned, OrderInfo> order_map; // key=order ID, value=(ordertype, price level)
 
     // std::map is slower than std::unordered_map, see complexity below.
