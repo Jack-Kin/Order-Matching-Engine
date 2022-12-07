@@ -1,20 +1,32 @@
+#include <algorithm>
+
 #include "orderbook.hh"
 
 // private:
-void OrderBook::match_order(Order& order){
+void OrderBook::match_order(Order& order){ // assume limit order
     bool isbuy = order.get_side()==OrderSide::BUY;
+    if(order.isAON()){
+        auto qty = order.get_quantity();
+        decltype(qty) fulfillment = 0;
+        auto quote = order.get_quote();
+        auto iter = isbuy ? sellprices.begin() : buyprices.begin();
+        auto iterend = isbuy ? std::upper_bound(sellprices.begin(), sellprices.end(), quote) : std::upper_bound(buyprices.begin(), buyprices.end(), quote, std::greater<unsigned>());
+        for(; qty<fulfillment && iter!=iterend; ++iter){
+            auto nowlist = isbuy ? sellpool[*iter] : buypool[*iter];
+            for(auto &noworder : nowlist){
+                fulfillment += noworder.get_quantity();
+            }
+        }
+        if(qty < fulfillment){return;}
+    }
     while(!(isbuy ? sellprices.empty() : buyprices.empty())){
         auto level = isbuy ? best_ask() : best_bid();
         if(isbuy ? order.get_quote() < level : order.get_quote() > level){
             return;
         }
-        if(order.isAON()){
-            // to be completed in ver 1.0. Line 1225
-            return;
-        }
-        auto & nowlist = isbuy ? sellpool[level] : buypool[level];
+        auto &nowlist = isbuy ? sellpool[level] : buypool[level];
         while(!nowlist.empty()){
-            auto & noworder = nowlist.front();
+            auto noworder = nowlist.front();
             auto quantity = std::min(noworder.get_quantity(), order.get_quantity());
             if(noworder.isAON() && noworder.get_quantity() > order.get_quantity()){
                 return;
