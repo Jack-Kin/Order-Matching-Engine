@@ -3,13 +3,13 @@
 
 // private:
 
-unsigned OrderBook::get_buy_market_price() const{
+unsigned OrderBook::get_buy_market_price() const{ // ?
     unsigned best_buy_price = buyprices.empty() ? 0 : *(buyprices.rbegin());
     return best_buy_price;
     //return std::max(best_buy_price,last_buy_price);
 }
 
-unsigned OrderBook::get_sell_market_price() const{
+unsigned OrderBook::get_sell_market_price() const{ // ?
     unsigned best_sell_price = sellprices.empty() ? std::numeric_limits<unsigned>::max() : *(sellprices.begin());
     return best_sell_price;
     //return std::min(best_sell_price,last_sell_price);
