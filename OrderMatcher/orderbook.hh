@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <fstream>
 #include <list>
 #include <optional>
 #include <set>
@@ -33,6 +34,9 @@ class OrderBook{
 private:
     unsigned last_buy_price = 0;
     unsigned last_sell_price = std::numeric_limits<unsigned>::max();
+    symbol_t company; // also the filename for output
+    std::ofstream ostrm;
+
     std::unordered_map<unsigned, std::list<Order>> buypool, sellpool, stop_buy_orders, stop_sell_orders; // key=price level; value=a list of Order
     // stores current levels of the hashmaps (buypool and sellpool)
     std::set<unsigned, std::less<unsigned>> sellprices, stop_sell_prices;
@@ -51,9 +55,8 @@ private:
     template<typename Pred, typename Comp>
     void execute_stop_orders(unsigned, std::set<unsigned, Comp>&, std::unordered_map<unsigned, std::list<Order>>&, Pred);
     void execute_stop_order(Order&, bool);
-    std::vector<Transaction> match_order(Order& order);
-    std::vector<Transaction> match_order(Order& order, bool isMarket);
-    // template<typename Comp>
+    void match_order(Order& order);
+    void match_order(Order& order, bool isMarket);
     StatusCode add_stop_order(Order&, bool);
     std::optional<OrderInfo> get_order_pair(unsigned int);
     template<typename Comp>
@@ -61,12 +64,13 @@ private:
     template<typename Comp>
     void delete_order(unsigned, unsigned, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool);
     void set_last_matching_price(Order& order, unsigned price);
-    // template<typename Comp>
-    // void test(std::set<unsigned,Comp>& prices);
 
 public:
+    OrderBook(symbol_t company = "MUDD") :
+        company(company),
+        ostrm(company, std::ios_base::app)
+        {}
     StatusCode add_order(Order&);
-    OrderBook() = default;
     std::optional<Order> get_order(unsigned int);
     StatusCode delete_order(unsigned int);
     unsigned best_ask()const{
