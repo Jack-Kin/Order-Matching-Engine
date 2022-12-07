@@ -17,6 +17,12 @@ std::ostream& operator<<(std::ostream &s, const OrderType type) {
         case OrderType::MARKET:
          s << "MARKET";
          break;
+        case OrderType::STOP:
+         s << "STOP";
+         break;
+        case OrderType::STOP_LIMIT:
+         s << "STOP_LIMIT";
+         break;
     }
     return s;
 }

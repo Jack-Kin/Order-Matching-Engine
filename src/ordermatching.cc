@@ -2,6 +2,7 @@
 
 // private:
 std::vector<Transaction> OrderBook::match_order(Order& order){
+    std::cout << "In match\n" ;
     std::vector<Transaction> result;
     bool isbuy = order.get_side()==OrderSide::BUY;
     while(!(isbuy ? sellprices.empty() : buyprices.empty())){
@@ -24,6 +25,8 @@ std::vector<Transaction> OrderBook::match_order(Order& order){
             // execute the order
             result.push_back(Transaction(isbuy?order.get_id():noworder.get_id(), isbuy?noworder.get_id():order.get_id(), level, quantity));
             noworder.reduce_quantity(quantity);
+            //update matching price
+            set_last_matching_price(noworder, level);
             if(noworder.get_quantity()==0){
                 order_map.erase(noworder.get_id());
                 nowlist.pop_front();
@@ -65,6 +68,5 @@ std::vector<Transaction> OrderBook::match_order(Order& order, bool isMarket){
         }
     }
     auto res = match_order(order);
-    execute_stop_orders();
     return res;
 }

@@ -3,45 +3,50 @@
 
 // private:
 
+void OrderBook::set_last_matching_price(Order& order, unsigned price){
+    if(order.isBuy()){
+        last_buy_price = price;
+    }else{
+        last_sell_price = price;
+    }
+}
+
 unsigned OrderBook::get_buy_market_price() const{
-    unsigned best_buy_price = buyprices.empty() ? 0 : *(buyprices.rbegin());
-    return best_buy_price;
-    //return std::max(best_buy_price,last_buy_price);
+    unsigned best_buy_price = buyprices.empty() ? 0 : *(buyprices.begin());
+    // return best_buy_price;
+    return std::max(best_buy_price,last_buy_price);
 }
 
 unsigned OrderBook::get_sell_market_price() const{
     unsigned best_sell_price = sellprices.empty() ? std::numeric_limits<unsigned>::max() : *(sellprices.begin());
-    return best_sell_price;
-    //return std::min(best_sell_price,last_sell_price);
+    // return best_sell_price;
+    return std::min(best_sell_price,last_sell_price);
 }
 
 template<typename Comp>
-StatusCode OrderBook::add_to_orderbook(Order& order, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool){
-    unsigned order_id = order.get_id();
-    if(order_map.count(order_id) != 0){
-        return StatusCode :: ORDER_EXISTS;
-    }
-    unsigned quote = order.get_quote();
+StatusCode OrderBook::add_to_orderbook(Order& order, unsigned level, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool){
     OrderSide side = order.get_side();
-    if (pool.find(quote) == pool.end()){ //price level not found
-            prices.insert(quote);
+    if (pool.find(level) == pool.end()){ //price level not found
+            prices.insert(level);
     }
-    pool[quote].push_back(order);
-    order_map.insert({order.get_id(),{side, quote,order.get_type()}});
+    pool[level].push_back(order);
+    OrderInfo info = {side, level, order.get_type()};
+    order_map.insert_or_assign(order.get_id(), info);
     return StatusCode :: OK;
 }
 
 void OrderBook::execute_stop_orders(){
+    std::cout << "Executing stop orders\n";
     //unsigned sell_market_price = get_sell_market_price();
     auto buy_pred = [](unsigned stop_price, unsigned sell_market_price) {
-     return stop_price <= sell_market_price;
+     return stop_price > sell_market_price;
     };
     //buy stop orders
     execute_stop_orders(get_sell_market_price(), stop_buy_prices, stop_buy_orders, buy_pred);
 
     //unsigned buy_market_price = get_buy_market_price();
     auto sell_pred = [](unsigned stop_price, unsigned buy_market_price) {
-     return stop_price >= buy_market_price;
+     return stop_price < buy_market_price;
     };
     execute_stop_orders(get_buy_market_price(), stop_sell_prices, stop_sell_orders, sell_pred);
 }
@@ -50,19 +55,19 @@ template<typename Pred, typename Comp>
 void OrderBook::execute_stop_orders(unsigned stop_price, std::set<unsigned,Comp>& prices,std::unordered_map<unsigned, std::list<Order>>& order_pool, Pred p){
     //buy - for every stop price below market price - del from pool and activate it
      //auto stop_price = get_sell_market_price();
-     auto f = prices.begin();
-     auto l = prices.end();
-     while (f != l){
+     for (auto f = prices.begin(); f != prices.end();) {
+        std::cout << "In loop to Executing stop orders at level " << *f <<" stop price " <<stop_price; 
         if(p(*f, stop_price))
             break;
         std::cout << "Executing stop orders at level " << *f << "\n";
-        std::list<Order>& orders = order_pool[*f];
+        std::list<Order> orders = order_pool[*f];
+        f = prices.erase(f);
+        order_pool.erase(*f);
         //iterare through all orders at a price level
         for(auto order : orders){
             execute_stop_order(order, order.get_type() == OrderType::STOP_LIMIT);
         }
-        prices.erase(f);
-        ++f;
+        //std::cout << "End of Executing stop orders at level " << *f << "\n";
      }
 
     //sell - for every stop price below market price
@@ -70,26 +75,41 @@ void OrderBook::execute_stop_orders(unsigned stop_price, std::set<unsigned,Comp>
 
 void OrderBook::execute_stop_order(Order& order, bool is_limit){
     if(is_limit){
+        // std::cout << "setting to LO \n" << order;
         order.set_type(OrderType::LIMIT);
+        // std::cout << "setting to LO \n" << order;
     }else{
+        // std::cout << "setting to MO \n" << order;
         order.set_type(OrderType::MARKET);
         order.set_quote(0);
     }
-    add_order(order);
+    match_order(order, !is_limit);
+    std::cout << "Order qty " << order.get_quantity();
+    if (order.get_quantity() > 0){
+        //std::cout << "Order qty " << order.get_quantity();
+        if(order.isBuy()){
+            add_to_orderbook(order, order.get_quote(), buyprices, buypool);
+        }else{
+            add_to_orderbook(order, order.get_quote(), sellprices, sellpool);
+        }
+    }
 }
 
 // template<typename Comp>
 StatusCode OrderBook::add_stop_order(Order& order, bool is_limit){
     bool can_execute;
+    unsigned stop_price = order.get_stop_price();
     if(order.isBuy()){
-        auto stop_price = get_sell_market_price();
-        can_execute = order.get_stop_price() <= stop_price;
+        auto market_price = get_sell_market_price();
+        std::cout << "Buy Stop price = " << market_price;
+        can_execute = stop_price <= market_price;
     }else{
-        auto stop_price = get_buy_market_price();
-        can_execute = order.get_stop_price() >= stop_price;
+        auto market_price = get_buy_market_price();
+        std::cout << "Sell Stop price = " << market_price;
+        can_execute = stop_price >= market_price;
     }
     if(can_execute){
-        std::cout << "Can execute stop order now \n";
+        std::cout << "Can execute stop order now, stop price = " << stop_price;
         //execute stop order fn - set type to MO/LO - if remaining need to add to orderbook
         execute_stop_order(order, is_limit);
     }else{
@@ -97,21 +117,14 @@ StatusCode OrderBook::add_stop_order(Order& order, bool is_limit){
         //create SO in pool, update levels
         //TODO: reuse add_to_orderbook after figuring out ordermap structure
         if(order.isBuy()){
-            add_to_orderbook(order, stop_buy_prices, stop_buy_orders);
+            add_to_orderbook(order, stop_price, stop_buy_prices, stop_buy_orders);
         }else{
-            add_to_orderbook(order, stop_sell_prices, stop_sell_orders);
+            add_to_orderbook(order, stop_price, stop_sell_prices, stop_sell_orders);
         }
     }
     return StatusCode::OK;
 }
 
-
-// Order& OrderBook::add_market_order(Order& order){
-//     OrderSide side = order.get_side();
-//     unsigned quote = (side==OrderSide::BUY) ? std::numeric_limits<unsigned>::max() : 0.0;
-//     order.set_quote(quote);
-//     return add_limit_order(order);
-// }
 
 std::optional<OrderInfo> OrderBook::get_order_pair(unsigned int order_id){
     //check order map
@@ -141,6 +154,11 @@ void OrderBook::delete_order(unsigned order_id, unsigned price, std::set<unsigne
 // public:
 
 StatusCode OrderBook::add_order(Order& order){
+    std::cout << "In add order \n";
+    unsigned order_id = order.get_id();
+    if(order_map.count(order_id) != 0){
+        return StatusCode :: ORDER_EXISTS;
+    }
     StatusCode status = StatusCode :: OK;
     OrderType type = order.get_type();
     if(type == OrderType :: MARKET || type == OrderType :: LIMIT ){
@@ -148,11 +166,12 @@ StatusCode OrderBook::add_order(Order& order){
         if (order.get_quantity() > 0){
                 // std::cout << "Order qty " << order.get_quantity();
             if(order.isBuy()){
-                add_to_orderbook(order, buyprices, buypool);
+                add_to_orderbook(order, order.get_quote(), buyprices, buypool);
             }else{
-                add_to_orderbook(order, sellprices, sellpool);
+                add_to_orderbook(order, order.get_quote(), sellprices, sellpool);
             }
-        }  
+        }
+        execute_stop_orders();  
     } else if(type == OrderType :: STOP){
         status = add_stop_order(order,false);
     } else{
@@ -172,7 +191,8 @@ std::optional<Order> OrderBook::get_order(unsigned int order_id){
     bool isbuy = order_info.side==OrderSide::BUY;
     bool isStop = (order_info.type == OrderType::STOP) || (order_info.type == OrderType::STOP_LIMIT);
     unsigned price = order_info.price;
-    std::list<Order>& order_list = (isbuy) ? ((isStop)? stop_buy_orders[price] : buypool[price]) : ((isStop)? stop_sell_orders[price] : sellpool[price]);
+    std::list<Order>& order_list = (isbuy) ? ((isStop)? stop_buy_orders[price] : buypool[price]) : 
+                                            ((isStop)? stop_sell_orders[price] : sellpool[price]);
     for (auto it = order_list.begin(); it != order_list.end(); ++it) {
         if(it->get_id() == order_id){
             return *it;
@@ -233,7 +253,3 @@ void OrderBook::printBuySellPool()const{
     }
 }
 
-// template<typename Comp>
-// void OrderBook::test(std::set<unsigned,Comp>& prices){
-//     return;
-// }

@@ -12,5 +12,11 @@ class CentralOrderBook {
         //delete order
         StatusCode delete_order(symbol_t, unsigned int);
 
+        std::optional<Order> get_order(symbol_t, unsigned int);
+
+        std::pair<StatusCode, unsigned> best_ask(symbol_t) const;
+
+        std::pair<StatusCode, unsigned> best_bid(symbol_t) const;
+
         void printBuySellPool(symbol_t) const;
 };

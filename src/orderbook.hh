@@ -45,12 +45,6 @@ private:
     // Adding a map from order id to order object reference since we cannot identify order type just with price level info
 	// std::unordered_map<unsigned int, Order&> order_map;
 
-    auto best_ask()const{
-        return sellprices.empty() ? std::numeric_limits<unsigned>::max() : *(sellprices.begin()); //rethink logic
-    }
-    auto best_bid()const{
-        return buyprices.empty() ? 0 : *(buyprices.begin());
-    }
     unsigned get_sell_market_price() const;
     unsigned get_buy_market_price() const;
     void execute_stop_orders();
@@ -63,9 +57,10 @@ private:
     StatusCode add_stop_order(Order&, bool);
     std::optional<OrderInfo> get_order_pair(unsigned int);
     template<typename Comp>
-    StatusCode add_to_orderbook(Order& order, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool);
+    StatusCode add_to_orderbook(Order& order, unsigned level, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool);
     template<typename Comp>
     void delete_order(unsigned, unsigned, std::set<unsigned, Comp>& prices, std::unordered_map<unsigned, std::list<Order>>& pool);
+    void set_last_matching_price(Order& order, unsigned price);
     // template<typename Comp>
     // void test(std::set<unsigned,Comp>& prices);
 
@@ -74,6 +69,12 @@ public:
     OrderBook() = default;
     std::optional<Order> get_order(unsigned int);
     StatusCode delete_order(unsigned int);
+    unsigned best_ask()const{
+        return sellprices.empty() ? std::numeric_limits<unsigned>::max() : *(sellprices.begin()); 
+    }
+    unsigned best_bid()const{
+        return buyprices.empty() ? 0 : *(buyprices.begin());
+    }
     void printBuySellPool()const;
 };
 

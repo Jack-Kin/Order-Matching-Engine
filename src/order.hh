@@ -32,18 +32,19 @@ private:
     char all_or_none; // aon=1, partial order allowed=0
     std::chrono::time_point<std::chrono::system_clock> timestamp;
 public:
-    Order(unsigned order, unsigned owner, unsigned quote, unsigned qty, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
+    Order(unsigned order, unsigned owner, unsigned quote, unsigned stop_price,unsigned qty, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
         order_id(order),
         owner_id(owner),
         quote(quote),
+        stop_price(stop_price),
         quantity(qty),
         order_side(sd),
         order_type(tp),
         all_or_none(aon),
         timestamp(tmstmp){}
-    Order(unsigned order, unsigned owner, unsigned quote, unsigned stop_price, unsigned qty, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
-        Order(order,owner,quote,qty,sd,tp,aon,tmstmp)
-        {stop_price = stop_price;}
+    Order(unsigned order, unsigned owner, unsigned quote, unsigned qty, OrderSide sd, OrderType tp, char aon = 0, std::chrono::time_point<std::chrono::system_clock> tmstmp = std::chrono::system_clock::now()):
+        Order(order,owner,quote,0,qty,sd,tp,aon,tmstmp)
+        {}
     auto get_id()const{return order_id;}
     auto get_owner()const{return owner_id;}
     auto get_quantity()const{return quantity;}
