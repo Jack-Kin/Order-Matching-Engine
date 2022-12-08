@@ -80,6 +80,38 @@ TEST(OrderBook, MatchLimitOrdersCompleteFill) {
 
 }
 
+TEST(OrderBook, MatchMarketOrders) {
+  CentralOrderBook book;
+  std::string s = "APPLE";
+  
+  EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
+  Order buy1(1,2,1000,5,OrderSide::BUY,OrderType::LIMIT,0);
+  Order buy2(2,2,1000,5,OrderSide::BUY,OrderType::LIMIT,0);
+  Order buy3(3,2,999,10,OrderSide::BUY,OrderType::LIMIT,0);
+  Order sell1(4,2,0,15,OrderSide::SELL,OrderType::MARKET,0);
+
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy1));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy2));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy3));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, sell1));
+  
+  book.printBuySellPool(s);
+  //sell1 should be matched with buy1, buy2, and buy3.
+  //buy3 would be partially filled
+  std::pair<StatusCode, unsigned> best_bid = book.best_bid(s);
+  EXPECT_EQ(StatusCode::OK, best_bid.first);
+  EXPECT_EQ(999, best_bid.second);
+
+  auto buy_order_obj = book.get_order(s,3);
+  EXPECT_FALSE(!buy_order_obj);
+  Order order = *buy_order_obj; 
+  EXPECT_EQ(buy3.get_id(), order.get_id());
+  EXPECT_EQ(5, order.get_quantity());
+  std::cout << buy3;
+  
+
+}
+
 TEST(OrderBook, AddStopOrder) {
   CentralOrderBook book;
   std::string s = "APPLE";
@@ -162,4 +194,10 @@ TEST(OrderBook, DeleteStopOrder) {
 
   order_obj = book.get_order(s,3);
   EXPECT_FALSE(order_obj);
+}
+
+TEST(OrderBook, DeleteOrderNotExists) {
+  CentralOrderBook book;
+  std::string s = "APPLE";
+  EXPECT_EQ(StatusCode::SYMBOL_NOT_EXISTS, book.delete_order(s, 1));
 }
