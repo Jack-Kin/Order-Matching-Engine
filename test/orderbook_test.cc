@@ -89,7 +89,7 @@ TEST(OrderBook, AddStopOrder) {
   Order buy1(1,2,702,15,OrderSide::BUY,OrderType::LIMIT,0);
   Order stop_sell1(9,2,700,700,15,OrderSide::SELL,OrderType::STOP_LIMIT,0);
 
-  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy1));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy1)); //B:702
   EXPECT_EQ(StatusCode::OK, book.add_order(s, stop_sell1));
   
   //stop order won't be executed yet, verify that
@@ -100,9 +100,10 @@ TEST(OrderBook, AddStopOrder) {
 
   Order buy2(3,2,700,5,OrderSide::BUY,OrderType::LIMIT,0);
   Order sell1(5,2,701,15,OrderSide::SELL,OrderType::LIMIT,0);
-  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy2));
-  EXPECT_EQ(StatusCode::OK, book.add_order(s, sell1));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy2)); //B:702,700
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, sell1));//s:701
 
+  book.printBuySellPool(s);
   //buy1 and sell1 matched - stop order won't be executed yet
   sell_order_obj = book.get_order(s,9);
   EXPECT_FALSE(!sell_order_obj);
@@ -111,6 +112,7 @@ TEST(OrderBook, AddStopOrder) {
 
   Order sell2(6,2,699,5,OrderSide::SELL,OrderType::LIMIT,0);
   EXPECT_EQ(StatusCode::OK, book.add_order(s, sell2));
+  book.printBuySellPool(s);
   //buy2 and sell2 matched - stop limit order will be converted to limit order now
   sell_order_obj = book.get_order(s,9);
   EXPECT_FALSE(!sell_order_obj);
