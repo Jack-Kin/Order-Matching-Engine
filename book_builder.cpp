@@ -15,6 +15,8 @@ BookBuilder::~BookBuilder()
 {
     std::cout << "Finish building book and matching orders in "
     << difftime(time(0),totalTime) << "seconds."  << std::endl;
+    std::cout << "Total Add Order is " << totalAdd << " and "
+    << "Total Delete Order is " << totalDelete << std::endl;
 }
 
 void BookBuilder::start(){
@@ -28,8 +30,7 @@ void BookBuilder::next(){
     if(!message.isEmpty()){
         bool validMessage = updateMessage();
         if(validMessage){
-//            updatePool();
-            updateBook();
+//            updateBook();
 //            WriteBookAndMessage();
         }
     }
@@ -72,10 +73,11 @@ void BookBuilder::updateBook() {
                             static_cast<unsigned int>(message.getPrice()),message.getRemSize(),
                             side ,type,0);
             centralBook.add_order(message.getTicker(), thisOrder);
-            std::cout << "Add Order successfully" << std::endl;
+//            std::cout << "Add Order successfully" << std::endl;
 
 //            centralBook.printBuySellPool(message.getTicker());
 //            message.print();
+            totalAdd += 1;
         }
 //        book.modifySize(message.getPrice(), message.getRemSize(), message.getSide());
     }
@@ -83,8 +85,10 @@ void BookBuilder::updateBook() {
     {
         StatusCode s = centralBook.delete_order(message.getId());
         if (s == StatusCode :: OK) {
-            std::cout << "Delete Order successfully" << std::endl;
+//            std::cout << "Delete Order successfully" << std::endl;
 //            message.print();
+            totalDelete += 1;
+
         }
         // Cancel order. Totally or partially.
         // book.modifySize(message.getPrice(),-message.getCancSize(),message.getSide());

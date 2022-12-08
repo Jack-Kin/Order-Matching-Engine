@@ -8,7 +8,7 @@ StatusCode CentralOrderBook::add_symbol(std::string symbol){
     if (order_book_map.count(symbol) != 0){
         status = StatusCode :: SYMBOL_EXISTS;
     } else{
-        order_book_map[symbol] = OrderBook();
+        order_book_map[symbol] = OrderBook(symbol);
         status = StatusCode :: OK;
     }
     return status;
@@ -66,8 +66,8 @@ StatusCode CentralOrderBook::delete_order(unsigned int order_id){
         if (order_book_ptr == order_book_map.end()){
             status = StatusCode :: SYMBOL_NOT_EXISTS;
         } else{
-            (order_book_ptr->second).delete_order(order_id);
-            status = StatusCode :: OK;
+            status = (order_book_ptr->second).delete_order(order_id);
+//            status = StatusCode :: OK;
         }
     }
     return status;
