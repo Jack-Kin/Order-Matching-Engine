@@ -53,7 +53,7 @@ TEST(OrderBook, AddSellLimitOrders) {
   EXPECT_EQ(800, best_ask.second);
 }
 
-TEST(OrderBook, MatchLimitOrdersCompleteFill) {
+TEST(OrderBook, MatchLimitOrdersBasic) {
   CentralOrderBook book;
   std::string s = "APPLE";
   
@@ -78,6 +78,33 @@ TEST(OrderBook, MatchLimitOrdersCompleteFill) {
   EXPECT_EQ(buy1.get_id(), order.get_id());
   EXPECT_EQ(5, order.get_quantity());
 
+}
+
+TEST(OrderBook, MatchLimitOrdersAcrossLevels) {
+  CentralOrderBook book;
+  std::string s = "APPLE";
+  
+  EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
+  Order buy1(1,2,1000,15,OrderSide::BUY,OrderType::LIMIT,0);
+  Order buy2(2,2,999,10,OrderSide::BUY,OrderType::LIMIT,0);
+  Order sell1(3,2,999,20,OrderSide::SELL,OrderType::LIMIT,0);
+  Order sell2(4,2,998,15,OrderSide::SELL,OrderType::LIMIT,0);
+
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy1));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, buy2));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, sell1));
+  EXPECT_EQ(StatusCode::OK, book.add_order(s, sell2));
+  
+  book.printBuySellPool(s);
+  //sell1 should have matched with buy1 and buy2
+  //sell2 should have matched with buy2
+
+  //buy2 should be partially filled with 10 qty still remaining
+  auto sell_order_obj = book.get_order(s,4);
+  EXPECT_FALSE(!sell_order_obj);
+  Order order = *sell_order_obj; 
+  EXPECT_EQ(sell2.get_id(), order.get_id());
+  EXPECT_EQ(10, order.get_quantity());
 }
 
 TEST(OrderBook, MatchMarketOrders) {
