@@ -16,8 +16,8 @@ enum class OrderSide : unsigned char {
 enum class OrderType : unsigned char {
     LIMIT,
     MARKET,
-    STOP,
-    STOP_LIMIT
+    STOP, // a.k.a. STOPLOSS
+    STOP_LIMIT // a.k.a. STOPLOSS_LIMIT
 };
 
 /*
