@@ -114,7 +114,7 @@ TEST(OrderBook, MatchMarketOrders) {
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order buy1(1,2,1000,5,OrderSide::BUY,OrderType::LIMIT,0);
   Order buy2(2,2,1000,5,OrderSide::BUY,OrderType::LIMIT,0);
-  Order buy3(3,2,999,10,OrderSide::BUY,OrderType::LIMIT,0);
+  Order buy3(3,2,1000,10,OrderSide::BUY,OrderType::LIMIT,0);
   Order sell1(4,2,0,15,OrderSide::SELL,OrderType::MARKET,0);
 
   EXPECT_EQ(StatusCode::OK, book.add_order(s, buy1));
@@ -127,7 +127,7 @@ TEST(OrderBook, MatchMarketOrders) {
   //buy3 would be partially filled
   std::pair<StatusCode, unsigned> best_bid = book.best_bid(s);
   EXPECT_EQ(StatusCode::OK, best_bid.first);
-  EXPECT_EQ(999, best_bid.second);
+  EXPECT_EQ(1000, best_bid.second);
 
   auto buy_order_obj = book.get_order(s,3);
   EXPECT_FALSE(!buy_order_obj);
