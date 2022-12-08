@@ -7,9 +7,11 @@
 */
 class CentralOrderBook {
     private:
-        // map of stock symbol to it's order book
+        // map of stock symbol to its order book
         std::unordered_map<std::string, OrderBook> order_book_map;
-    public:
+        // store a hash map of orderID to symbols
+
+public:
         
         StatusCode add_symbol(std::string);
         
