@@ -12,7 +12,7 @@ void OrderBook::match_order(Order& order){ // assume limit order
         auto iter = isbuy ? sellprices.begin() : buyprices.begin();
         auto iterend = isbuy ? std::upper_bound(sellprices.begin(), sellprices.end(), quote) : std::upper_bound(buyprices.begin(), buyprices.end(), quote, std::greater<unsigned>());
         for(; qty<fulfillment && iter!=iterend; ++iter){
-            auto nowlist = isbuy ? sellpool[*iter] : buypool[*iter];
+            auto &nowlist = isbuy ? sellpool[*iter] : buypool[*iter];
             for(auto &noworder : nowlist){
                 fulfillment += noworder.get_quantity();
             }
@@ -26,7 +26,7 @@ void OrderBook::match_order(Order& order){ // assume limit order
         }
         auto &nowlist = isbuy ? sellpool[level] : buypool[level];
         while(!nowlist.empty()){
-            auto noworder = nowlist.front();
+            auto &noworder = nowlist.front();
             auto quantity = std::min(noworder.get_quantity(), order.get_quantity());
             if(noworder.isAON() && noworder.get_quantity() > order.get_quantity()){
                 return;
