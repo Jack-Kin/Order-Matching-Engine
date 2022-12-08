@@ -8,14 +8,14 @@
 // Demonstrate some basic assertions.
 TEST(OrderBook, AddSymbols) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
 }
 
 TEST(OrderBook, AddSymbolsDuplicate) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   EXPECT_EQ(StatusCode::SYMBOL_EXISTS, book.add_symbol(s));
@@ -24,7 +24,7 @@ TEST(OrderBook, AddSymbolsDuplicate) {
 // add 2 buy - check besk bid
 TEST(OrderBook, AddBuyLimitOrders) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order buy1(1,2,1000,15,OrderSide::BUY,OrderType::LIMIT,0);
@@ -40,7 +40,7 @@ TEST(OrderBook, AddBuyLimitOrders) {
 // add 2 sell - check best ask
 TEST(OrderBook, AddSellLimitOrders) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order sell1(1,2,1000,15,OrderSide::SELL,OrderType::LIMIT,0);
@@ -55,7 +55,7 @@ TEST(OrderBook, AddSellLimitOrders) {
 
 TEST(OrderBook, MatchLimitOrdersCompleteFill) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order buy1(1,2,1000,15,OrderSide::BUY,OrderType::LIMIT,0);
@@ -82,7 +82,7 @@ TEST(OrderBook, MatchLimitOrdersCompleteFill) {
 
 TEST(OrderBook, AddStopOrder) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order buy1(1,2,702,15,OrderSide::BUY,OrderType::LIMIT,0);
@@ -122,7 +122,7 @@ TEST(OrderBook, AddStopOrder) {
 
 TEST(OrderBook, DeleteLimitOrder) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order buy1(1,2,1000,15,OrderSide::BUY,OrderType::LIMIT,0);
@@ -144,7 +144,7 @@ TEST(OrderBook, DeleteLimitOrder) {
 
 TEST(OrderBook, DeleteStopOrder) {
   CentralOrderBook book;
-  symbol_t s = "APPLE";
+  std::string s = "APPLE";
   
   EXPECT_EQ(StatusCode::OK, book.add_symbol(s));
   Order buy1(1,2,1000,1000,15,OrderSide::BUY,OrderType::STOP_LIMIT,0);

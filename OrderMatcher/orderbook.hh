@@ -34,7 +34,7 @@ class OrderBook{
     private:
         unsigned last_buy_price = 0;
         unsigned last_sell_price = std::numeric_limits<unsigned>::max();
-        string company; // also the filename for output
+        std::string company; // also the filename for output
         std::ofstream ostrm;
 
         // key=price level; value=a list of Order
@@ -68,7 +68,7 @@ class OrderBook{
         void set_last_matching_price(Order& order, unsigned price);
 
     public:
-        OrderBook(string company = "MUDD") :
+        OrderBook(std::string company = "MUDD") :
             company(company),
             ostrm(company, std::ios_base::app)
             {}

@@ -8,20 +8,20 @@
 class CentralOrderBook {
     private:
         // map of stock symbol to it's order book
-        std::unordered_map<string, OrderBook> order_book_map;
+        std::unordered_map<std::string, OrderBook> order_book_map;
     public:
         
-        StatusCode add_symbol(string);
+        StatusCode add_symbol(std::string);
         
-        StatusCode add_order(string, Order&);
+        StatusCode add_order(std::string, Order&);
         
-        StatusCode delete_order(string, unsigned int);
+        StatusCode delete_order(std::string, unsigned int);
 
-        std::optional<Order> get_order(string, unsigned int);
+        std::optional<Order> get_order(std::string, unsigned int);
 
-        std::pair<StatusCode, unsigned> best_ask(string) const;
+        std::pair<StatusCode, unsigned> best_ask(std::string) const;
 
-        std::pair<StatusCode, unsigned> best_bid(string) const;
+        std::pair<StatusCode, unsigned> best_bid(std::string) const;
 
-        void printBuySellPool(string) const;
+        void printBuySellPool(std::string) const;
 };
