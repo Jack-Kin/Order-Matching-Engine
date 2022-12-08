@@ -1,22 +1,27 @@
 #include <unordered_map>
 #include "orderbook.hh"
 
+/*
+    The main Order Book class that maintains the order book for different
+    stocks. It provides operations on the order book.
+*/
 class CentralOrderBook {
     private:
-        std::unordered_map<symbol_t, OrderBook> order_book_map;
+        // map of stock symbol to it's order book
+        std::unordered_map<string, OrderBook> order_book_map;
     public:
-        //add symbol
-        StatusCode add_symbol(symbol_t);
-        //add order
-        StatusCode add_order(symbol_t, Order&);
-        //delete order
-        StatusCode delete_order(symbol_t, unsigned int);
+        
+        StatusCode add_symbol(string);
+        
+        StatusCode add_order(string, Order&);
+        
+        StatusCode delete_order(string, unsigned int);
 
-        std::optional<Order> get_order(symbol_t, unsigned int);
+        std::optional<Order> get_order(string, unsigned int);
 
-        std::pair<StatusCode, unsigned> best_ask(symbol_t) const;
+        std::pair<StatusCode, unsigned> best_ask(string) const;
 
-        std::pair<StatusCode, unsigned> best_bid(symbol_t) const;
+        std::pair<StatusCode, unsigned> best_bid(string) const;
 
-        void printBuySellPool(symbol_t) const;
+        void printBuySellPool(string) const;
 };

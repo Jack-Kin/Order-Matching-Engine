@@ -69,7 +69,6 @@ TEST(OrderBook, MatchLimitOrdersCompleteFill) {
   
   //sell1 should have matched with buy1 - hence sell1 should be deleted from order book
   auto sell_order_obj = book.get_order(s,3);
-  // auto m1 = testing::Eq(nullptr);
   EXPECT_FALSE(sell_order_obj);
 
   //buy1 should be partially filled with 5 qty still remaining
@@ -103,7 +102,7 @@ TEST(OrderBook, AddStopOrder) {
   EXPECT_EQ(StatusCode::OK, book.add_order(s, buy2)); //B:702,700
   EXPECT_EQ(StatusCode::OK, book.add_order(s, sell1));//s:701
 
-  book.printBuySellPool(s);
+  // book.printBuySellPool(s);
   //buy1 and sell1 matched - stop order won't be executed yet
   sell_order_obj = book.get_order(s,9);
   EXPECT_FALSE(!sell_order_obj);
@@ -112,7 +111,7 @@ TEST(OrderBook, AddStopOrder) {
 
   Order sell2(6,2,699,5,OrderSide::SELL,OrderType::LIMIT,0);
   EXPECT_EQ(StatusCode::OK, book.add_order(s, sell2));
-  book.printBuySellPool(s);
+  // book.printBuySellPool(s);
   //buy2 and sell2 matched - stop limit order will be converted to limit order now
   sell_order_obj = book.get_order(s,9);
   EXPECT_FALSE(!sell_order_obj);

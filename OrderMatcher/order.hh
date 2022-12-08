@@ -20,6 +20,9 @@ enum class OrderType : unsigned char {
     STOP_LIMIT
 };
 
+/*
+    The Order class.
+*/
 class Order{
 private:
     unsigned order_id;

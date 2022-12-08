@@ -1,5 +1,8 @@
 #include "central_order_book.hh"
 
+/*
+    Add a stock symbol 'symbol' to the Central Order Book.
+*/
 StatusCode CentralOrderBook::add_symbol(symbol_t symbol){
     StatusCode status;
     if (order_book_map.count(symbol) != 0){
@@ -11,6 +14,9 @@ StatusCode CentralOrderBook::add_symbol(symbol_t symbol){
     return status;
 }
 
+/*
+    Adds an order of a particular symbol to the order book. 
+*/
 StatusCode CentralOrderBook::add_order(symbol_t symbol, Order& order){
     StatusCode status;
     auto order_book_ptr = order_book_map.find(symbol);
@@ -20,12 +26,14 @@ StatusCode CentralOrderBook::add_order(symbol_t symbol, Order& order){
         // std::cout << "symbol not found";
     } else{
         // std::cout << "symbol found";
-        (order_book_ptr->second).add_order(order);
-        status = StatusCode :: OK;
+        status = (order_book_ptr->second).add_order(order);
     }
     return status;
 }
 
+/*
+    Fetch an order of a particular symbol and order ID from the order book. 
+*/
 std::optional<Order> CentralOrderBook::get_order(symbol_t symbol, unsigned int order_id){
     auto order_book_ptr = order_book_map.find(symbol);
     
@@ -35,6 +43,9 @@ std::optional<Order> CentralOrderBook::get_order(symbol_t symbol, unsigned int o
     return (order_book_ptr->second).get_order(order_id);
 }
 
+/*
+    Delete an order of a particular symbol and order ID from the order book. 
+*/
 StatusCode CentralOrderBook::delete_order(symbol_t symbol, unsigned int order_id){
     StatusCode status;
     auto order_book_ptr = order_book_map.find(symbol);
@@ -47,6 +58,9 @@ StatusCode CentralOrderBook::delete_order(symbol_t symbol, unsigned int order_id
     return status;
 }
 
+/*
+    Return the best ask/sell price of a symbol.
+*/
 std::pair<StatusCode, unsigned> CentralOrderBook::best_ask(symbol_t symbol) const{
     StatusCode status;
     unsigned price = std::numeric_limits<unsigned>::max();
@@ -60,6 +74,9 @@ std::pair<StatusCode, unsigned> CentralOrderBook::best_ask(symbol_t symbol) cons
     return std::make_pair(status, price);
 }
 
+/*
+    Return the best bid/buy price of a symbol.
+*/
 std::pair<StatusCode, unsigned> CentralOrderBook::best_bid(symbol_t symbol) const{
     StatusCode status;
     unsigned price = 0;
@@ -73,6 +90,7 @@ std::pair<StatusCode, unsigned> CentralOrderBook::best_bid(symbol_t symbol) cons
     return std::make_pair(status, price);
 }
 
+// Print the order book contents - internally used for debugging
 void CentralOrderBook::printBuySellPool(symbol_t symbol)const{
     order_book_map.at(symbol).printBuySellPool();
 }
