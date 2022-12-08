@@ -106,6 +106,7 @@ Message Reader::createMessage(){
             msg.setSide(static_cast<side_type>(direction == 'S'));
             msg.setRemSize(static_cast<size_type>(size));
             msg.setPrice(static_cast<price_type>(price));
+            msg.setTicker(std::string(ticker));
             if (debug == 1)
             {
                 std::cout << "ticker:       " << ticker << std::endl;
@@ -128,6 +129,7 @@ Message Reader::createMessage(){
             msg.setRemSize(static_cast<size_type>(size));
             msg.setPrice(static_cast<price_type>(price));
             msg.setMPID(*mpid);
+            msg.setTicker(std::string(ticker));
             if (debug == 1)
             {
                 std::cout << "ticker:       " << ticker << std::endl;
@@ -211,9 +213,9 @@ Message Reader::createMessage(){
             break;
     }
 
-    if (strcmp(ticker, stock.c_str()) != 0) {
-        return {};
-    }
+//    if (strcmp(ticker, stock.c_str()) != 0) {
+//        return {};
+//    }
     return msg;
 }
 

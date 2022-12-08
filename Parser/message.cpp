@@ -79,6 +79,12 @@ void Message::setMPID(const char& _mpid){
     strncpy(mpid, &_mpid, 4); mpid[4] = 0;
 }
 
+void Message::setTicker(const std::string & _ticker) {
+    ticker = _ticker;
+}
+
+
+
 // getters
 char Message::getType() const{
     return type;
@@ -127,6 +133,11 @@ size_type Message::getOldSize()const{
 const char * Message::getMPID()const{
     return mpid;
 }
+
+std::string Message::getTicker() const {
+    return ticker;
+}
+
 
 bool Message::isEmpty()const{
     return (id==ID_DEFAULT);
