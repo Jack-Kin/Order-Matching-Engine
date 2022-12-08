@@ -31,7 +31,7 @@ void Message::setType(const char& _type){
         type = _type;
     }
     else{
-        std::cerr << "Message with wrong type (" << _type << ") has been found!"<< std::endl;
+        std::cerr << "Message with wrong type (" << _type << ") !"<< std::endl;
     }
 }
 

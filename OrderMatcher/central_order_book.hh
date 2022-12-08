@@ -9,7 +9,11 @@ class CentralOrderBook {
     private:
         // map of stock symbol to it's order book
         std::unordered_map<std::string, OrderBook> order_book_map;
-    public:
+        const char* SymbolFilter[4] =
+            { "AAPL", "MSFT", "TSLA", "AMZN"};
+    // store a hash map of orderID to symbols
+
+public:
         
         StatusCode add_symbol(std::string);
         
