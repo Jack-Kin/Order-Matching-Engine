@@ -11,7 +11,7 @@
 class BookBuilder{
 private:
     Message message;
-    OrderBook book;
+    CentralOrderBook centralBook;
     Reader message_reader;
     Writer messageWriter;
     Writer bookWriter;
@@ -19,6 +19,9 @@ private:
     time_t totalTime;
     std::vector<std::string> SymbolFilters =
             { "AAPL", "MSFT", "TSLA", "AMZN"};
+    int totalAdd = 0;
+    int totalDelete = 0;
+    int totalMatch = 0;
 
 public:
     BookBuilder(const std::string &inputMessagePath,

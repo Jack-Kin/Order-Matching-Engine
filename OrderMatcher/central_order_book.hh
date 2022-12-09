@@ -10,16 +10,16 @@ class CentralOrderBook {
         // map of stock symbol to its order book
         std::unordered_map<std::string, OrderBook> order_book_map;
         // store a hash map of orderID to symbols
-
+        std::unordered_map<unsigned int, std::string> order_ticket_map;
 public:
         
         StatusCode add_symbol(std::string);
         
         StatusCode add_order(std::string, Order&);
         
-        StatusCode delete_order(std::string, unsigned int);
+        StatusCode delete_order(unsigned int);
 
-        std::optional<Order> get_order(std::string, unsigned int);
+        std::optional<Order> get_order(unsigned int);
 
         std::pair<StatusCode, unsigned> best_ask(std::string) const;
 
