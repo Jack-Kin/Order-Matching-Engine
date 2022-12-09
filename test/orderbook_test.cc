@@ -228,3 +228,4 @@ TEST(OrderBook, DeleteOrderNotExists) {
   std::string s = "APPLE";
   EXPECT_EQ(StatusCode::SYMBOL_NOT_EXISTS, book.delete_order(s, 1));
 }
+

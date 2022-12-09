@@ -52,8 +52,7 @@ StatusCode CentralOrderBook::delete_order(std::string symbol, unsigned int order
     if (order_book_ptr == order_book_map.end()){
         status = StatusCode :: SYMBOL_NOT_EXISTS;
     } else{
-        (order_book_ptr->second).delete_order(order_id);
-        status = StatusCode :: OK;
+        status = (order_book_ptr->second).delete_order(order_id);
     }
     return status;
 }
