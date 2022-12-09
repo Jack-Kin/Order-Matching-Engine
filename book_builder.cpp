@@ -30,7 +30,7 @@ void BookBuilder::next(){
     if(!message.isEmpty()){
         bool validMessage = updateMessage();
         if(validMessage){
-//            updateBook();
+            updateBook();
 //            WriteBookAndMessage();
         }
     }
