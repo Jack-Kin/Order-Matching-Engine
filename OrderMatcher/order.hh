@@ -5,12 +5,7 @@
 
 enum class OrderSide : unsigned char {
     BUY,
-    SELL,
-    SELL_SHORT,
-    SELL_SHORT_EXEMPT,
-    CROSS,
-    CROSS_SHORT,
-    CROSS_SHORT_EXEMPT
+    SELL
 };
 
 enum class OrderType : unsigned char {

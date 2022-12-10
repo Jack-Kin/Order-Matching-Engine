@@ -54,8 +54,8 @@ void BookBuilder::updateBook() {
     if (typeMsg == 'A')
     {
         // if the ticket is in the selected array
-//        if (in_array(message.getTicker(), SymbolFilters))
-//        {
+        if (in_array(message.getTicker(), SymbolFilters))
+        {
             OrderType type = OrderType::LIMIT;
             OrderSide side = (message.getSide() == 0) ? OrderSide::BUY: OrderSide::SELL;
             Order thisOrder(message.getId(),0,
@@ -65,7 +65,7 @@ void BookBuilder::updateBook() {
 //            centralBook.printBuySellPool(message.getTicker());
 //            message.print();
             totalAdd += 1;
-//        }
+        }
     }
     else if(typeMsg == 'D')
     {
