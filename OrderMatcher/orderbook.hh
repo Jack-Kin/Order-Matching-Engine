@@ -70,7 +70,7 @@ class OrderBook{
     public:
         OrderBook(std::string company = "default") :
             company(company),
-            ostrm(company, std::ios_base::app)
+            ostrm("./output/" + company, std::ios_base::trunc)
             {}
         StatusCode add_order(Order&);
         std::optional<Order> get_order(unsigned int);
